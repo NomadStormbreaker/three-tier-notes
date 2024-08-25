@@ -4,6 +4,12 @@ pipeline {
     environment {
         DOCKER_IMAGE_NAME = 'notes-frontend'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
+        GIT_REPO_URL = 'https://github.com/NomadStormbreaker/three-tier-notes.git'
+        GIT_BRANCH = 'main'
+        DEPLOYMENT_FILE_PATH = 'k8s-manifests/frontend/frontend-deployment.yaml'
+        GIT_USER_EMAIL = 'chetanmirashi7@gmail.com'
+        GIT_USER_NAME = 'NomadStormbreaker'
+        GITHUB_TOKEN = credentials('github-cred')
     }
 
     stages {
@@ -28,14 +34,34 @@ pipeline {
                 }
             }
         }
+
+         stage('Update Kubernetes Deployment') {
+            steps {
+                script {
+                    // Clone the repository containing the Kubernetes manifests
+                    sh 'git clone -b ${GIT_BRANCH} ${GIT_REPO_URL} repo'
+                    dir('repo') {
+                        // Update the image tag in the frontend Kubernetes deployment file
+                        sh '''
+                        sed -i "s|image: ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:.*|image: ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}|" ${DEPLOYMENT_FILE_PATH}
+                        git config user.email "${GIT_USER_EMAIL}"
+                        git config user.name "${GIT_USER_NAME}"
+                        git add ${DEPLOYMENT_FILE_PATH}
+                        git commit -m "Update frontend image to ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                        git push https://${GIT_USER_NAME}:${GITHUB_TOKEN}@${GIT_REPO_URL} HEAD:${GIT_BRANCH}
+                        '''
+                    }
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'Docker image built and pushed successfully.'
+            echo 'Frontend Docker image built, pushed, and Kubernetes deployment updated successfully.'
         }
         failure {
-            echo 'Failed to build or push the Docker image.'
+            echo 'Failed to build, push the Docker image, or update the Kubernetes deployment.'
         }
     }
 }
