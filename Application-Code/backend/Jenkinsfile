@@ -21,7 +21,7 @@ pipeline {
                     // Navigate to the backend directory and install dependencies
                     sh 'pwd'
                     sh 'ls -ltr'
-                    sh 'cd /Application-Code/backend && npm install'
+                    sh 'cd Application-Code/backend && npm install'
                 }
             }
         }
