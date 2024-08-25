@@ -23,7 +23,7 @@ spec:
     spec: 
       containers:
       - name: frontend
-        image: /notes-frontend:9
+        image: nomadstormbreaker/notes-frontend:9
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
