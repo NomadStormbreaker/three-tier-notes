@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "NodeJS" // Use the name you gave in the Global Tool Configuration
+    }
+    
     environment {
         DOCKER_IMAGE_NAME = 'notes-backend' // Replace with your desired Docker image name
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds') // Reference the credentials ID you created
