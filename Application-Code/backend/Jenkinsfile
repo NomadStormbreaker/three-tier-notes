@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = 'notes-backend' // Replace with your desired Docker image name
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub_creds') // Reference the credentials ID you created
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds') // Reference the credentials ID you created
         SONAR_URL = "http://54.234.119.1:9000" // Your SonarQube server URL
     }
 
