@@ -1,20 +1,20 @@
 pipeline {
-    agent any
-
-    tools {
-        nodejs "NodeJS" // Use the name you gave in the Global Tool Configuration
+    agent {
+        docker {
+            image 'node:14' // or another Node.js version with the necessary glibc
+            args '-v /var/lib/jenkins/workspace:/workspace' // Mount the workspace
+        }
     }
-    
+
     environment {
-        DOCKER_IMAGE_NAME = 'notes-backend' // Replace with your desired Docker image name
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds') // Reference the credentials ID you created
-        SONAR_URL = "http://54.234.119.1:9000" // Your SonarQube server URL
+        DOCKER_IMAGE_NAME = 'notes-backend'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub_creds')
+        SONAR_URL = "http://54.234.119.1:9000"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout your source code
                 checkout scm
             }
         }
@@ -22,10 +22,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Navigate to the backend directory and install dependencies
-                    sh 'pwd'
-                    sh 'ls -ltr'
-                    sh 'cd Application-Code/backend && npm install'
+                    sh 'npm install'
                 }
             }
         }
@@ -34,7 +31,6 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
                     sh '''
-                    cd /Application-Code/backend
                     sonar-scanner -Dsonar.projectKey=backend-project-key \
                                   -Dsonar.sources=. \
                                   -Dsonar.host.url=${SONAR_URL} \
@@ -47,13 +43,12 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    // Use the credentials stored in Jenkins and run the script
                     sh '''
-                    chmod +x /Application-Code/scripts/build_and_push.sh
+                    chmod +x ../scripts/build_and_push.sh
                     DOCKERHUB_USERNAME=${DOCKERHUB_CREDENTIALS_USR} \
                     DOCKERHUB_PASSWORD=${DOCKERHUB_CREDENTIALS_PSW} \
                     BUILD_NUMBER=${BUILD_NUMBER} \
-                    /Application-Code/scripts/build_and_push.sh
+                    ../scripts/build_and_push.sh
                     '''
                 }
             }
