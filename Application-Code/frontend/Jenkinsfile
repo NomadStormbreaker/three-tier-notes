@@ -43,7 +43,7 @@ pipeline {
                     dir('repo') {
                         // Update the image tag in the frontend Kubernetes deployment file
                         sh '''
-                        sed -i "s|image: ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:.*|image: ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}|" ${DEPLOYMENT_FILE_PATH}
+                        sed -i "s|image: .*${DOCKER_IMAGE_NAME}:.*|image: ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}|" ${DEPLOYMENT_FILE_PATH}
                         git config user.email "${GIT_USER_EMAIL}"
                         git config user.name "${GIT_USER_NAME}"
                         git add ${DEPLOYMENT_FILE_PATH}
