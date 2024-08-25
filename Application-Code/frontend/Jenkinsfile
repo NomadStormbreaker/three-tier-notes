@@ -10,6 +10,7 @@ pipeline {
         GIT_USER_EMAIL = 'chetanmirashi7@gmail.com'
         GIT_USER_NAME = 'NomadStormbreaker'
         GITHUB_TOKEN = credentials('github-cred')
+        GIT_REPO_NAME = 'three-tier-notes'
     }
 
     stages {
