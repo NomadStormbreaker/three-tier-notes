@@ -27,6 +27,6 @@ spec:
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
-            value: "http://k8s-threetie-mainlb-c0d4aec13e-460782670.us-east-1.elb.amazonaws.com/api/tasks" # Load Balancer DNS
+            value: "http://k8s-threetie-mainlb-4ce525320c-961025431.us-east-1.elb.amazonaws.com/api/tasks" # Load Balancer DNS
         ports:
         - containerPort: 3000
