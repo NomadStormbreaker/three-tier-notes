@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'node:14' // or another Node.js version with the necessary glibc
-            args '-v /var/lib/jenkins/workspace:/workspace' // Mount the workspace
+            image 'node:14'
+            args '-v /var/lib/jenkins/workspace:/workspace' // Bind workspace
         }
     }
 
@@ -22,6 +22,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
+                    // Set npm cache to a directory Jenkins can write to
+                    sh 'npm config set cache /workspace/.npm-cache --global'
                     sh 'npm install'
                 }
             }
