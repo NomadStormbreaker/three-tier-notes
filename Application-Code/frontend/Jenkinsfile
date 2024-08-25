@@ -6,13 +6,18 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         GIT_REPO_URL = 'https://github.com/NomadStormbreaker/three-tier-notes.git'
         GIT_BRANCH = 'main'
-        DEPLOYMENT_FILE_PATH = 'k8s-manifests/frontend/frontend-deployment.yaml'
+        DEPLOYMENT_FILE_PATH = 'My-K8s-Manifests/frontend/frontend-deployment.yaml'
         GIT_USER_EMAIL = 'chetanmirashi7@gmail.com'
         GIT_USER_NAME = 'NomadStormbreaker'
-        GITHUB_TOKEN = credentials('github-cred')
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 checkout scm
@@ -35,7 +40,7 @@ pipeline {
             }
         }
 
-         stage('Update Kubernetes Deployment') {
+        stage('Update Kubernetes Deployment') {
             steps {
                 script {
                     // Clone the repository containing the Kubernetes manifests
