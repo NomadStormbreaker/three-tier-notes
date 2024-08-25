@@ -53,7 +53,7 @@ pipeline {
                         git config user.name "${GIT_USER_NAME}"
                         git add ${DEPLOYMENT_FILE_PATH}
                         git commit -m "Update frontend image to ${DOCKERHUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
-                        git push https://${GIT_USER_NAME}:${GITHUB_TOKEN}@${GIT_REPO_URL} HEAD:${GIT_BRANCH}
+                        git push https://${GIT_USER_NAME}:${GITHUB_TOKEN}@$github.com/NomadStormbreaker/three-tier-notes.git HEAD:${GIT_BRANCH}
                         '''
                     }
                 }
