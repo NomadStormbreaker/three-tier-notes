@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: nomadstormbreaker/notes-backend:20
+        image: nomadstormbreaker/notes-backend:21
         imagePullPolicy: Always
         env:
           - name: MONGO_CONN_STR
