@@ -1,20 +1,21 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:14'
-            args '-v /var/lib/jenkins/workspace:/workspace' // Bind workspace
-        }
-    }
+    agent any
 
+    tools {
+        nodejs "NodeJS" // Use the name you gave in the Global Tool Configuration
+    }
+    
     environment {
-        DOCKER_IMAGE_NAME = 'notes-backend'
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
-        SONAR_URL = "http://54.234.119.1:9000"
+        DOCKER_IMAGE_NAME = 'notes-backend' // Replace with your desired Docker image name
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds') // Reference the credentials ID you created
+        SONAR_URL = "http://54.234.119.1:9000" // Your SonarQube server URL
+        SCANNER_HOME = tool name: 'SonarQube Scanner' // Set the SonarQube Scanner home directory
     }
 
     stages {
         stage('Checkout') {
             steps {
+                // Checkout your source code
                 checkout scm
             }
         }
@@ -22,9 +23,10 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Set npm cache to a directory Jenkins can write to
-                    sh 'npm config set cache /workspace/.npm-cache --global'
-                    sh 'npm install'
+                    // Navigate to the backend directory and install dependencies
+                    sh 'pwd'
+                    sh 'ls -ltr'
+                    sh 'cd Application-Code/backend && npm install'
                 }
             }
         }
@@ -33,10 +35,11 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
                     sh '''
-                    sonar-scanner -Dsonar.projectKey=backend-project-key \
-                                  -Dsonar.sources=. \
-                                  -Dsonar.host.url=${SONAR_URL} \
-                                  -Dsonar.login=$SONAR_AUTH_TOKEN
+                    cd Application-Code/backend
+                    ${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=backend-project-key \
+                                                     -Dsonar.sources=. \
+                                                     -Dsonar.host.url=${SONAR_URL} \
+                                                     -Dsonar.login=$SONAR_AUTH_TOKEN
                     '''
                 }
             }
@@ -45,12 +48,13 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
+                    // Use the credentials stored in Jenkins and run the script
                     sh '''
-                    chmod +x ../scripts/build_and_push.sh
+                    chmod +x /Application-Code/scripts/build_and_push.sh
                     DOCKERHUB_USERNAME=${DOCKERHUB_CREDENTIALS_USR} \
                     DOCKERHUB_PASSWORD=${DOCKERHUB_CREDENTIALS_PSW} \
                     BUILD_NUMBER=${BUILD_NUMBER} \
-                    ../scripts/build_and_push.sh
+                    /Application-Code/scripts/build_and_push.sh
                     '''
                 }
             }
