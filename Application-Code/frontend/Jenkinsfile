@@ -9,6 +9,7 @@ pipeline {
         DEPLOYMENT_FILE_PATH = 'k8s-manifests/frontend/frontend-deployment.yaml'
         GIT_USER_EMAIL = 'chetanmirashi7@gmail.com'
         GIT_USER_NAME = 'NomadStormbreaker'
+        GITHUB_TOKEN = credentials('github-cred')
     }
 
     stages {
