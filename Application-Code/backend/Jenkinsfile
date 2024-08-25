@@ -17,11 +17,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    chmod +x /Application-Code/scripts/build_and_push.sh
+                    pwd
+                    ls -ltr
+                    chmod +x Application-Code/scripts/build_and_push.sh
                     DOCKERHUB_USERNAME=${DOCKERHUB_CREDENTIALS_USR} \
                     DOCKERHUB_PASSWORD=${DOCKERHUB_CREDENTIALS_PSW} \
                     BUILD_NUMBER=${BUILD_NUMBER} \
-                    /Application-Code/scripts/build_and_push.sh
+                    ./Application-Code/scripts/build_and_push.sh
                     '''
                 }
             }
