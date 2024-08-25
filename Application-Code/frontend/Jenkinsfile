@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE_NAME = 'notes-backend'
+        DOCKER_IMAGE_NAME = 'notes-frontend'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
     }
 
@@ -19,11 +19,11 @@ pipeline {
                     sh '''
                     pwd
                     ls -ltr
-                    chmod +x Application-Code/scripts/build_and_push_backend.sh
+                    chmod +x Application-Code/scripts/build_and_push_frontend.sh
                     DOCKERHUB_USERNAME=${DOCKERHUB_CREDENTIALS_USR} \
                     DOCKERHUB_PASSWORD=${DOCKERHUB_CREDENTIALS_PSW} \
                     BUILD_NUMBER=${BUILD_NUMBER} \
-                    ./Application-Code/scripts/build_and_push_backend.sh
+                    ./Application-Code/scripts/build_and_push_frontend.sh
                     '''
                 }
             }
