@@ -153,3 +153,16 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 # CREATE
 
 # Make some change in Repo and build the Pipeline, check if ArgoCD deploys it automatically
+
+
+
+
+##################################33 DELETION OF RESOURCES #####################################
+# Delete ARGO CD applications
+kubectl delete application three-tier-app-frontend -n argocd
+kubectl delete application three-tier-app-backend -n argocd
+
+# Delete Argo CD Installation
+kubectl delete namespace argocd
+
+eksctl delete cluster --name three-tier-dev --region us-east-1
